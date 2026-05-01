@@ -236,7 +236,7 @@ function normalizeGenerateResultByResponseFormat(
 
 async function requestReply(generation_id?: string, batch_id?: string): Promise<string> {
     const store = useDataStore();
-    const response_format = store.settings.额外模型解析配置.应答格式;
+    const response_format = '聊天消息';
 
     const config: GenerateRawConfig = {
         user_input: '遵循<must>指令',
