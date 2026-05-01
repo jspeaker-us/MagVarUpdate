@@ -175,37 +175,17 @@ export async function generateExtraModel(): Promise<string | null> {
 async function invokeExtraModel(generation_id?: string, batch_id?: string): Promise<string> {
     try {
         const result = await requestReply(generation_id, batch_id);
+        const trimmed_result = result.trim();
 
-        const tag = _([...result.matchAll(/<(update(?:variable)?|variableupdate)>/gi)]).last()?.[1];
-        if (!tag) {
+        if (!trimmed_result) {
             throw new Error(
                 literalYamlify({
-                    ['[MVU额外模型解析]没有能从回复中找到<UpdateVariable>标签']: result,
+                    ['[MVU额外模型解析]额外模型回复为空']: result,
                 })
             );
         }
 
-        const start_index = result.lastIndexOf(`<${tag}>`);
-        const end_index = result.indexOf(`</${tag}>`, start_index);
-        const update_block = result.slice(
-            start_index + 2 + tag.length,
-            end_index === -1 ? undefined : end_index
-        );
-
-        const fn_call_match =
-            /_\.(?:set|insert|assign|remove|unset|delete|add)\s*\([\s\S]*?\)\s*;/.test(
-                update_block
-            );
-        const json_patch_match = /json_?patch/i.test(update_block);
-        if (fn_call_match || json_patch_match) {
-            return `<UpdateVariable>${update_block}</UpdateVariable>`;
-        }
-
-        throw new Error(
-            literalYamlify({
-                ['[MVU额外模型解析]从回复找到了<UpdateVariable>标签，但其内的更新命令无效']: result,
-            })
-        );
+        return trimmed_result;
     } finally {
         /* empty */
     }

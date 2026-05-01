@@ -1,6 +1,10 @@
+import autoprefixer from 'autoprefixer';
+import tailwindcss from '@tailwindcss/postcss';
+import postcssMinify from 'postcss-minify';
+
 /** @type {import('postcss-load-config').Config} */
 const config = {
-    plugins: [require('autoprefixer'), require('@tailwindcss/postcss'), require('postcss-minify')],
+    plugins: [autoprefixer, tailwindcss, postcssMinify],
 };
 
-module.exports = config;
+export default config;
