@@ -1,4 +1,5 @@
 import { createEmptyGameData, loadInitVarData } from '@/function/initvar/variable_init';
+import { getExtraModelCleanupTags, removeTaggedBlocks } from '@/function/extra_model_tags';
 import { isExtraModelSupported } from '@/function/is_extra_model_supported';
 import { isFunctionCallingSupported } from '@/function/is_function_calling_supported';
 import { cleanUpMetadata, reconcileAndApplySchema } from '@/function/schema';
@@ -423,20 +424,12 @@ export const buttons: Button[] = [
             const last_msg = getLastMessageId();
             const current_chatmsg = getChatMessages(last_msg).at(-1);
             const current_chat_content = current_chatmsg?.message ?? '';
-            const begin_pos = current_chat_content.lastIndexOf('<UpdateVariable>');
-            if (begin_pos >= 0) {
-                //裁剪掉已有的变量更新块
-                const end_pos = current_chat_content.lastIndexOf('</UpdateVariable>');
-                let filtered_string = '';
-                if (end_pos === -1) {
-                    //没有找到，裁剪掉后面的所有内容
-                    filtered_string = current_chat_content.slice(0, begin_pos);
-                } else {
-                    //找到了，还需要拼接 </UpdateVariable> 后的内容
-                    filtered_string =
-                        current_chat_content.slice(0, begin_pos) +
-                        current_chat_content.slice(end_pos + 17);
-                }
+            const filtered_string = removeTaggedBlocks(
+                current_chat_content,
+                getExtraModelCleanupTags(),
+                { remove_unclosed_tail: true }
+            );
+            if (filtered_string !== current_chat_content) {
                 //更新聊天记录
                 await setChatMessages(
                     [

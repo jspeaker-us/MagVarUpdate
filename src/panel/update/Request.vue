@@ -37,6 +37,20 @@
                 <span>启用</span>
             </Checkbox>
         </Field>
+
+        <Field label="清理标签">
+            <template #label-suffix>
+                <HelpIcon
+                    help="额外模型解析重试前会从当前消息中删除这些 HTML/XML 标签块；发送给剧情 AI 前也会过滤这些标签块。用空格、逗号或换行分隔，例如：UpdateVariable summary memory"
+                />
+            </template>
+            <textarea
+                v-model="store.settings.额外模型解析配置.清理标签"
+                class="text_pole"
+                rows="2"
+                placeholder="UpdateVariable update variableupdate summary"
+            />
+        </Field>
     </Detail>
 </template>
 

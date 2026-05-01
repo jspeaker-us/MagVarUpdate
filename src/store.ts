@@ -103,6 +103,7 @@ const NewSettings = z
                     ])
                     .default('依次请求，失败后重试'),
                 请求次数: z.number().default(3),
+                清理标签: z.string().default('UpdateVariable update variableupdate summary'),
 
                 模型来源: z.enum(['与插头相同', '自定义']).default('与插头相同'),
                 api地址: z.string().default('http://localhost:1234/v1'),
